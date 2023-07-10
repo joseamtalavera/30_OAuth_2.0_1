@@ -14,31 +14,55 @@ app.use(express.urlencoded({extended: true}));
 
 const PORT = 4001;
 
+
+
+
+
+
 //we create a an OAuth 2.0 instance of the OAuth2Server object
 const oauth = new OAuth2Server({
     model: require('./model.js'), //model object contains functions to access, store, and validate our access tokens
     allowBearerTokensInQueryString: true, //to pass tokens inside the URL
-    accessTokenLifetime: 60 * 60 //set the access token lifetime to one hour
+    //accessTokenLifetime: 60 * 60 //set the access token lifetime to one hour
 });
+
+
+
+
+
+
+
 
 //let’s create a middleware function to handle authenticating access tokens inside our application.
 
 const authenticateRequest = (req, res, next) => {
     let request = new OAuth2Server.Request(req);
     let response = new OAuth2Server.Response(res);
-return oauth.authenticate(request, response)
-  .then(() => {
-    next();
-  })
-  .catch((err) => {
-    res.send('You are not allowed');
+
+    return oauth.authenticate(request, response)
+    .then((token) => {
+      next();
+    })
+    .catch((err) => {
+        res.sendFile(path.join(__dirname, 'public/error.html'));
   })
 }
+
+
+
+
+
+
+
+
+
+
 
 
 //We create a function named obtainToken() that takes the HTTP request and HTTP response as arguments - req and res
 
 const obtainToken = (req, res) => {
+    console.log(req.body)
     let request = new OAuth2Server.Request(req);
     let response = new OAuth2Server.Response(res);
 
@@ -54,6 +78,17 @@ const obtainToken = (req, res) => {
 app.all('/auth', obtainToken);
 
 
+
+
+
+
+
+
+
+
+
+
+
 //routes
 
 app.get('/', (req, res)=>{
@@ -64,8 +99,12 @@ app.get('/login', (req, res)=>{
     res.sendFile(path.join(__dirname, 'public/login.html'));
 })
 
-app.get('/secret', (req, res)=>{
-    res.send('Welcome to the secret area.');
+app.get('/public', (req, res)=>{
+    res.sendFile(path.join(__dirname, 'public/allowed.html'));
+})
+
+app.get('/secret', authenticateRequest, (req, res)=>{
+    res.sendFile(path.join(__dirname, 'public/private.html'));
 })
 
 app.listen(PORT, ()=>console.log(`Listening on port ${PORT}`));

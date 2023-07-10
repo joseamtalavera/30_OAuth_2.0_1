@@ -41,7 +41,7 @@
 </head>
 <body>
     <ul class="nav">
-        <li><a href="/public" ide="public">Public Area</a></li>
+        <li><a href="/public" id="public">Public Area</a></li>
         <li><a href="/secret" id="secretarea">Secret Area</a></li>
         <li id="login"><a href="/login"><button>Loging</button></a></li>
     </ul>
@@ -63,4 +63,43 @@
     
     
 </body>
+
+<script>
+  const form = document.getElementById("signup-form");
+  form.addEventListener("submit", (event) => {
+      let formData = new FormData(form);
+      formData.append("grant_type", "client_credentials");
+
+      // disable default action
+      event.preventDefault();
+
+      // configure a request
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/auth");
+
+      // prepare form data
+
+      const queryString = new URLSearchParams(new FormData(form)).toString();
+      // set headers
+      xhr.setRequestHeader("Content-Type", `application/x-www-form-urlencoded`);
+      xhr.setRequestHeader(
+          "Authorization",
+          `Basic Y29kZWNhZGVteTpjb2RlY0BkZW15`
+      );
+
+      // send request
+      xhr.send(queryString + "&grant_type=client_credentials");
+
+      // listen for `load` event
+      xhr.onload = () => {
+          let res = JSON.parse(xhr.response);
+          console.log(xhr.response)
+          console.log(res.accessToken)
+          window.location='/?accessToken='+res.accessToken
+
+          let response = document.getElementById("login-response");
+          response.innerHTML = xhr.responseText;
+      };
+  });
+</script>
 </html>

@@ -2,10 +2,12 @@ let db = require('./db.js')
 
 
 const getClient = (clientId, clientSecret) => {
+    console.log(`getClient called with clientId=${clientId} and clientSecret=${clientSecret}`);
     let confidentialClients = db.confidentialClients.filter((client) => {
         return client.clientId === clientId && 
                 client.clientSecret === clientSecret;   
     });
+    console.log(`Found ${confidentialClients.length} matching clients`);
     return confidentialClients[0];
 }
 
@@ -30,7 +32,7 @@ const getUserFromClient = (client) => {
 //now we request the accessToken and we compare it to the savedToken. Then we export the module
 
 const getAccessToken = (accessToken) => {
-    const tokens = db.tokens.filter((savedToken) => {
+    let tokens = db.tokens.filter((savedToken) => {
       return savedToken.accessToken === accessToken;
     })
     return tokens[0];
