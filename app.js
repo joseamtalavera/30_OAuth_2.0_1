@@ -62,7 +62,7 @@ const authenticateRequest = (req, res, next) => {
 //We create a function named obtainToken() that takes the HTTP request and HTTP response as arguments - req and res
 
 const obtainToken = (req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     let request = new OAuth2Server.Request(req);
     let response = new OAuth2Server.Response(res);
 

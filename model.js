@@ -2,12 +2,12 @@ let db = require('./db.js')
 
 
 const getClient = (clientId, clientSecret) => {
-    console.log(`getClient called with clientId=${clientId} and clientSecret=${clientSecret}`);
+    //console.log(`getClient called with clientId=${clientId} and clientSecret=${clientSecret}`);
     let confidentialClients = db.confidentialClients.filter((client) => {
         return client.clientId === clientId && 
                 client.clientSecret === clientSecret;   
     });
-    console.log(`Found ${confidentialClients.length} matching clients`);
+    //console.log(`Found ${confidentialClients.length} matching clients`);
     return confidentialClients[0];
 }
 
